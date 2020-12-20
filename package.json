@@ -1,0 +1,15 @@
+{
+  "name": "mern-course",
+  "version": "1.0.0",
+  "description": "Mern stack",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mern",
+    "react"
+  ],
+  "author": "Varius <itbeard@inbox.lv>",
+  "license": "ISC"
+}
