@@ -39,9 +39,29 @@ router.post(
 })
 
 // /api/auth/login
-router.post('/login', async (req, res) => {
+router.post(
+  '/login',
+  [
+    check('email', 'Enter valid email.').normalizeEmail().isEmail(),
+    check('password', 'Enter password.').exists()
+  ],
+  async (req, res) => {
   
-})
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+      res.status(400).json({
+        errors: errors.array(),
+        message: 'Incorrect login data.'
+      })
+    }
+    try{
+      const { email, password } = req.body
+    }
+    catch(e){
+      res.status(500).json({message: 'Something gone wrong, try again...'})
+    }
+  }
+)
 
 
 module.exports = router

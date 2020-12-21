@@ -216,4 +216,4 @@ in `routes/auth.routes.js`
 const { check, validationResult } = require('express-validator')
 ```
 
-[time 39:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=2340s)
+[time 41:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=2460s)
