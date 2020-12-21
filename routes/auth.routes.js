@@ -1,10 +1,17 @@
 const { Router } = require('express')
 const bcrypt = require('bcryptjs')
+const { check, validationResult } = require('express-validator')
 const User = require('../models/User')
 const router = Router()
 
 // /api/auth/register
-router.post('/register', async (req, res) => {
+router.post(
+  '/register',
+  [
+    check('email', 'Incorrect email').isEmail(),
+    check('password', 'Min. 6 symbols').isLength({ min: 6 })
+  ],
+  async (req, res) => {
   try{
     const { email, password } = req.body
     const candidate = User.findOne({email})

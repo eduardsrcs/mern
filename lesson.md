@@ -211,3 +211,8 @@ router.post('/register', async (req, res) => {
 ```sh
 npm i express-validator
 ```
+in `routes/auth.routes.js`
+```
+const { check, validationResult } = require('express-validator')
+```
+
