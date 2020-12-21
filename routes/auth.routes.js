@@ -12,6 +12,13 @@ router.post(
     check('password', 'Min. 6 symbols').isLength({ min: 6 })
   ],
   async (req, res) => {
+  const errors = validationResult(req)
+  if(!errors.isEmpty()){
+    res.status(400).json({
+      errors: errors.array(),
+      message: 'Incorrect registration data.'
+    })
+  }
   try{
     const { email, password } = req.body
     const candidate = User.findOne({email})
