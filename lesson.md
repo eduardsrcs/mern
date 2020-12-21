@@ -206,3 +206,8 @@ router.post('/register', async (req, res) => {
 ```
 
 [time 34:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=2040s)
+
+## Validation fields
+```sh
+npm i express-validator
+```
