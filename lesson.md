@@ -224,3 +224,27 @@ const { check, validationResult } = require('express-validator')
 
 GWT tokens...
 
+[npm jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+
+```sh
+npm install jsonwebtoken
+```
+
+include jwt in routes
+
+in config create secret key:
+
+```
+
+```
+
+...
+
+So, backend is ok currently. Let's create client side...
+
+# Client
+
+```sh
+npx create-react-app client
+```
+

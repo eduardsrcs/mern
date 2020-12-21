@@ -66,7 +66,7 @@ router.post(
 
       const isMatch = bcrypt.compare(password, user.password)
 
-      is(!isMatch) {
+      if(!isMatch) {
         return res.status(400).json({message: 'Invalid password.'})
       }
 
