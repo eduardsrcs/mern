@@ -248,3 +248,4 @@ So, backend is ok currently. Let's create client side...
 npx create-react-app client
 ```
 
+[time 48:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=2880s)
