@@ -217,3 +217,10 @@ const { check, validationResult } = require('express-validator')
 ```
 
 [time 41:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=2460s)
+
+...
+
+## Auth
+
+GWT tokens...
+
