@@ -277,3 +277,43 @@ export default App;
 time 50:00
 
 [time 50:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=3000s)
+
+```sh
+npm i
+```
+
+## Tune Front and Backend launch
+
+add to `package.json`:
+
+```json
+"client": "npm run start --prefix client",
+"dev": "concurrently \"npm run server\" \"npm run client\""
+```
+
+ "dev" script allows to run two scripts simultaneously.
+
+## Including Materialize
+
+### Getting started
+
+in `client` folder run:
+
+```sh
+npm install materialize-css@next
+```
+
+in `client/src/App.js` import materialize:
+
+```js
+import 'materialize-css'
+```
+
+in `client/src/index.css`
+
+```css
+@import '~materialize-css/dist/css/materialize.min.css'
+```
+
+
+
