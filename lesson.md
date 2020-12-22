@@ -249,3 +249,31 @@ npx create-react-app client
 ```
 
 [time 48:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=2880s)
+
+Watch out for yarn, if needed, remove `client/node_modules folder`, `client/yarn.lock`
+
+## Remove initial git from client
+```sh
+rm -rf client/.git
+```
+
+## Remove unused files and clean some another
+```sh
+rm client/src/App.css client/src/App.test.js client/src/logo.svg
+```
+
+Clean `client/src/App.js`
+```
+function App() {
+  return (
+    <div>
+      <h1>Hello client</h1>
+    </div>
+  )
+}
+export default App;
+```
+
+time 50:00
+
+[time 50:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=3000s)
