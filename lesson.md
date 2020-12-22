@@ -303,17 +303,68 @@ in `client` folder run:
 npm install materialize-css@next
 ```
 
-in `client/src/App.js` import materialize:
-
-```js
-import 'materialize-css'
-```
-
 in `client/src/index.css`
 
 ```css
-@import '~materialize-css/dist/css/materialize.min.css'
+@import '~materialize-css/dist/css/materialize.min.css';
+```
+
+in `client/src/App.js` import materialize:
+
+```js
+import React from 'react'
+import 'materialize-css'
+
+function App() {
+  return (
+    <div className="container">
+      <h1>Hello client!!!</h1>
+    </div>
+  )
+}
+export default App;
+
+```
+
+## Routes: react-router-dom
+
+in `client`
+
+```sh
+npm i react-router-dom
+```
+
+```sh
+mkdir client/src/pages
+touch client/src/pages/AuthPage.js
+touch client/src/pages/LinksPage.js
+touch client/src/pages/CreatePage.js
+touch client/src/pages/DetailPage.js
+```
+
+in each file initial code...
+
+```jsx
+import React from 'react'
+
+export const LinksPage = () => {
+  return (
+    <div>
+      <h1>Links page</h1>
+    </div>
+  )
+}
+```
+
+### Creating routes
+
+```
+touch client/src/routes.js
 ```
 
 
+
+in `client/src/App.js`
+
+[1:03:48](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=3828s)
 
