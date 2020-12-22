@@ -425,6 +425,8 @@ export default App;
 
 ```
 
+## Create Auth form
+
 `client/src/pages/AuthPage.js`
 
 ```jsx
@@ -496,3 +498,8 @@ input.yellow-input:focus{
 }
 ```
 
+## Processing form
+
+4695
+
+[1:18:15](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=4695s)
