@@ -500,6 +500,30 @@ input.yellow-input:focus{
 
 ## Processing form
 
-4695
+add to `client/src/pages/AuthPage.js`
 
-[1:18:15](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=4695s)
+```jsx
+const [form, setForm] = useState({
+  email: '', password: ''
+})
+
+const changeHandler = event => {
+  setForm({ ...form, [event.targret.name]: event.target.value})
+}
+// ...
+<input
+  placeholder="email"
+  id="email"
+  type="text"
+  className="yellow-input"
+  name="email"
+  onChange="changeHandler"
+  autoFocus
+/>
+```
+
+[time 1:18:15](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=4695s) 
+
+## Make requests to server
+
+We will use our hooks... instead of axios and etc...
