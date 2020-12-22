@@ -57,7 +57,7 @@ export const AuthPage = () => {
             <button
               className="btn yellow darken-4"
               style={{marginRight: 10}}
-              disabled={login}
+              disabled={loading}
             >
               Login
             </button>

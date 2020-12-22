@@ -527,3 +527,54 @@ const changeHandler = event => {
 ## Make requests to server
 
 We will use our hooks... instead of axios and etc...
+
+### Creating custom hooks
+
+#### Http hook
+
+```sh
+mkdir client/src/hooks
+touch client/src/hooks/http.hook.js
+```
+
+```js
+import { useState, useCallback } from 'react'
+
+export const useHttp = () => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const request = useCallback(async (url, method='GET', body=null, headers={}) => {
+    setLoading(true)
+    try{
+      const response = await fetch(url, { method, body, headers })
+      const data = await response.json()
+
+      if(!response.ok){
+        throw new Error(data.message || 'Something went wrong.')
+      }
+
+      setLoading(false)
+
+      return data
+    }
+    catch(e){
+      setLoading(false)
+      setError(e.message)
+      throw e
+    }
+  }, [])
+
+  const clearError = () => setError(null)
+
+  return { loading, request, error, clearError}
+}
+```
+
+this hook will help us to interact with server. 
+
+At this moment we will get an error 404, because we trying to post on port 3000 instead of 5000...
+
+[time 1:30:40](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=5440s) 
+
+## Use proxy
