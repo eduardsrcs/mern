@@ -362,9 +362,137 @@ export const LinksPage = () => {
 touch client/src/routes.js
 ```
 
+```jsx
+import React from 'react'
+import { Switch, Route, Redirect, Router } from 'react-router-dom'
+import { LinksPage } from './pages/LinksPage'
+import { CreatePage } from './pages/CreatePage'
+import { DetailPage } from './pages/DetailPage'
+import { AuthPage } from './pages/AuthPage'
+
+export const useRoutes = isAuthenticated => {
+  if(isAuthenticated) {
+    return (
+      <Switch>
+      <Route path="/links" exact>
+        <LinksPage />
+      </Route>
+        <Route path="/create" exact>
+          <CreatePage />
+        </Route>
+        <Route path="/detail/:id">
+          <DetailPage />
+        </Route>
+        <Redirect to="/create" />
+      </Switch>
+    )
+  }
+
+  return (
+    <Switch>
+      <Route to="/" exact>
+        <AuthPage />
+      </Route>
+      <Redirect to="/" />
+    </Switch>
+  )
+}
+```
+
 
 
 in `client/src/App.js`
 
 [1:03:48](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=3828s)
+
+```jsx
+import React from 'react'
+import {BrowserRouter as Router} from 'react-router-dom'
+import 'materialize-css'
+import { useRoutes } from './routes';
+
+function App() {
+  const routes = useRoutes(false)
+  return (
+    <div className="container">
+      <Router>
+        {routes}
+      </Router>
+    </div>
+  )
+}
+export default App;
+
+```
+
+`client/src/pages/AuthPage.js`
+
+```jsx
+import React from 'react'
+
+export const AuthPage = () => {
+  return (
+    <div className="row">
+      <div className="col s6 offset-s3">
+        <h1>Shorten link</h1>
+        <div className="card blue darken-1">
+          <div className="card-content white-text">
+            <span className="card-title">Authorization</span>
+            <div>
+              <div className="input-field">
+                <input
+                  placeholder="email"
+                  id="email"
+                  type="text"
+                  className="yellow-input"
+                  name="email"
+                  autoFocus
+                />
+                <label htmlFor="email">email</label>
+              </div>
+              <div className="input-field">
+                <input
+                  placeholder="password"
+                  id="password"
+                  type="password"
+                  className="yellow-input"
+                  name="password"  
+                />
+                <label htmlFor="password">pasword</label>
+              </div>
+            </div>
+          </div>
+          <div className="card-action">
+            <button className="btn yellow darken-4" style={{marginRight: 10}}>Login</button>
+            <button className="btn grey lighten-1 black-text">Register</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+`client/src/index.css`
+
+```css
+@import '~materialize-css/dist/css/materialize.min.css';
+
+input.yellow-input{
+  border-bottom: 1px solid #fff!important;
+  box-shadow: 0 1px 0 0 #fff!important;
+}
+
+input.yellow-input + label{
+  color: #fff!important;
+}
+input.yellow-input:focus + label{
+  color: #ffeb3b!important;
+}
+
+input.yellow-input:focus{
+  border-bottom: 1px solid #ffeb3b!important;
+  box-shadow: 0 1px 0 0 #ffeb3b!important;
+}
+```
 
