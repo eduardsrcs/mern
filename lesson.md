@@ -1011,7 +1011,7 @@ module.exports = model('Link', schema)
 
 
 
-So, create this `routes/link.routes.js`
+So, model is ready, create this `routes/link.routes.js`
 
 ```js
 const {Router} = require('express')
@@ -1046,7 +1046,66 @@ router.get('/:id', async (req, res)=> {
 })
 
 module.exports = router 
+```
 
+in `app.js` add this: 
+
+```js
+app.use('/api/link', require('./routes/lnk.routes'))
+```
+
+in `routes/link.routes.js`
+
+```js
+router.get('/', async (req, res)=> {
+  try{
+    await Link.findOne({ owner: null}) // ???
+  }
+  catch(e){
+    res.status(500).json({message: 'Something gone wrong, try again...'})
+  }
+})
+```
+
+we cannot get links owner at this time. We can solve it by using **jwt**
+
+```sh
+mkdir middleware && touch middleware/auth.middleware.js
+```
+
+```js
+const jwt = require('jsonwebtoken')
+const config = require('config')
+
+module.exports = (req, res, next) => {
+  if( req.method === 'OPTIONS') {
+    return next
+  }
+
+  try{
+    const token = req.headers.authorization.split(' ')[1]
+
+    if(!token){
+      return res.status(401).json({ message: 'Not authorized'})
+    }
+
+    const decoded = jwt.verify(token, config.get('jwtSecret'))
+    req.user = decoded
+    next()
+  }
+  catch(e){
+    res.status(401).json({ message: 'Not authorized'})
+  }
+}
+```
+
+then in `routes/link.routes.js`
+
+```js
+const auth = require('../middleware/auth.middleware')
+// 
+router.get('/', auth, async (req, res)=> {
+// ...
 ```
 
 
