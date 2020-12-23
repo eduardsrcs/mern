@@ -966,3 +966,88 @@ export const Navbar = () => {
 
 [time 2:04:00](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=7440s)
 
+## Some fixes on Auth page
+
+`client/src/pages/AuthPage.js`
+
+```js
+useEffect(() => {
+  window.M.updateTextFields()
+})
+```
+
+# Continue improve backend
+
+[time 2:06:30](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=7590s)
+
+```sh
+touch routes/link.routes.js
+```
+
+this file will generate links, but it needs to have model...
+
+```sh
+touch models/Link.js
+# or
+cp  models/User.js models/Link.js
+```
+
+`models/Link.js`
+
+```js
+const {Schema, model, Types} = require('mongoose')
+
+const schema = new Schema({
+  from: {type: String, required: true},
+  to: {type: String, required: true, unique: true},
+  code: {type: String, required: true, unique: true},
+  date: {type: Date, default: Date.now},
+  clicks: {type: Number, default: 0},
+  owner: [{type: Types.ObjectId, ref: 'User'}]
+})
+
+module.exports = model('Link', schema)
+```
+
+
+
+So, create this `routes/link.routes.js`
+
+```js
+const {Router} = require('express')
+const Link = require('../models/Link')
+const router = Router()
+
+router.post('/generate', async (req, res) => {
+  try{
+    
+  }
+  catch(e){
+    res.status(500).json({message: 'Something gone wrong, try again...'})
+  }
+})
+
+router.get('/', async (req, res)=> {
+  try{
+    
+  }
+  catch(e){
+    res.status(500).json({message: 'Something gone wrong, try again...'})
+  }
+})
+
+router.get('/:id', async (req, res)=> {
+  try{
+    
+  }
+  catch(e){
+    res.status(500).json({message: 'Something gone wrong, try again...'})
+  }
+})
+
+module.exports = router 
+
+```
+
+
+
