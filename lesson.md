@@ -712,3 +712,216 @@ const clearError = useCallback(() => {setError(null)}, [])
 
 here Vladilen also returns setError(null), but in my case this generates error.
 
+#### Checking users
+
+`routes/auth.routes.js`
+
+```js
+User.findOne({email},async (err, docs) => {
+  if (docs) {
+    console.log('docs',docs)
+    return res.status(400).json({message: 'That email already registered.'})
+  }
+  else {
+    console.log('Err',err)
+    const hashedPassword = await bcrypt.hash(password, 12)
+    const user = new User({email, password: hashedPassword})
+    await user.save()
+    res.status(201).json({message: 'User is created.'})
+  }
+})
+```
+
+have to change, because **User.findOne({email})** returns object in any case and candidate check was not valid and returned "Already exists" even if no that user found.
+
+## Make login logics.
+
+Login is similar to register.
+
+### Debug
+
+in `routes/auth.routes.js`
+
+```js
+User.findOne({email}, async (err, data) => {
+  if(data){
+    const isMatch = await bcrypt.compare(password, data.password)
+    if(!isMatch) {
+      return res.status(400).json({message: 'Invalid password.'})
+    }
+    const token = jwt.sign(
+      {userId: data.id},
+      config.get('jwtSecret'),
+      { expiresIn: '1h'}
+    )
+    
+    res.json({token, userId: data.id})
+  }
+  else {
+    return res.status(400).json({message: 'This email is not found.'})
+  }
+})
+
+// const user = User.findOne({email})
+// if (!user) {
+//   return res.status(400).json({message: 'This email is not found.'})
+// }
+
+// const isMatch = bcrypt.compare(password, user.password)
+
+// if(!isMatch) {
+//   return res.status(400).json({message: 'Invalid password.'})
+// }
+
+// const token = jwt.sign(
+//   {userId: user.id},
+//   config.get('jwtSecret'),
+//   { expiresIn: '1h'}
+// )
+
+// res.json({to
+```
+
+### Create new hook
+
+```sh
+touch client/src/hooks/auth.hook.js
+```
+
+```js
+import { useState, useCallback, useEffect} from 'react'
+
+const storageName = 'userData'
+
+export const useAuth = () => {
+  const [token, setToken] = useState(null)
+  const [userId, setUserId] = useState(null)
+
+  const login = useCallback((jwtToken, id) => {
+    setToken(jwtToken)
+    setUserId(id)
+
+    localStorage.setItem(storageName, JSON.stringify{
+      userId, token
+    })
+  }, [])
+
+  const logout = useCallback(() => {
+    setToken(null)
+    setUserId(null)
+    localStorage.removeItem(storageName)
+  }, [])
+
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem(storageName))
+
+    if(data && data.token) {
+      login(data.token, data.userId)
+    }
+
+  }, [login])
+
+  return { login, logout, token, userId }
+}
+```
+
+in `client/src/App.js` add:
+
+```js
+const { token, login, logout, userId } = useAuth()
+```
+
+so, these variables we need to give to all app via context. 
+
+## Create context for entire application
+
+```sh
+mkdir client/src/context
+touch client/src/context/AuthContext.js
+```
+
+1:54:35
+
+```js
+import {createContext} from 'react'
+
+function noop() {}
+
+export const AuthContext = createContext({
+  token: null,
+  userId: null,
+  login: noop,
+  logout: noop,
+  isAuthenticated: false
+})
+```
+
+in `client/src/App.js` wrap all app in this context...
+
+```js
+import React from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { useRoutes } from './routes';
+import { useAuth } from './hooks/auth.hook';
+import { AuthContext } from './context/AuthContext'
+import 'materialize-css'
+
+function App() {
+  const { token, login, logout, userId } = useAuth()
+  const isAuthenticated = !!token
+  const routes = useRoutes(isAuthenticated)
+  return (
+    <AuthContext.Provider value={{
+      token, login, logout, userId, isAuthenticated
+    }}>
+      <div className="container">
+        <Router>
+          {routes}
+        </Router>
+      </div>
+    </AuthContext.Provider>
+  )
+}
+export default App;
+
+```
+
+so, here we get some warns...
+
+### Debug
+
+```sh
+src/hooks/auth.hook.js
+[1]   Line 16:6:  React Hook useCallback has missing dependencies: 'token' and 'userId'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+```
+
+`client/src/hooks/auth.hook.js`
+
+```js
+const login = useCallback((jwtToken, id) => {
+  setToken(jwtToken)
+  setUserId(id)
+
+  localStorage.setItem(storageName, JSON.stringify({
+    userId: id, token: jwtToken
+  }))
+}, [])
+```
+
+resolves it.
+
+## Set context to Auth page
+
+in `client/src/pages/AuthPage.js` add
+
+```js
+const auth = useContext(AuthContext)
+```
+
+in *loginHandler* method add:
+
+```js
+auth.login(data.token, data.userId)
+```
+
+So, here we go, auth is completed...
