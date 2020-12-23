@@ -188,16 +188,20 @@ router.post('/register', async (req, res) => {
   try{
     const { email, password } = req.body
     const candidate = User.findOne({email})
+    console.log(candidate)
     if(candidate) {
       return res.status(400).json({message: 'That email already registered.'})
     }
+    else {
+      const hashedPassword = await bcrypt.hash(password, 12)
+      const user = new User({email, password: hashedPassword})
+  
+      await user.save()
+  
+      res.status(201).json({message: 'User is created.'})
 
-    const hashedPassword = await bcrypt.hash(password, 12)
-    const user = new User({email, password: hashedPassword})
+    }
 
-    await user.save()
-
-    res.status(201).json({message: 'User is created.'})
   }
   catch(e){
     res.status(500).json({message: 'Something gone wrong, try again...'})
@@ -430,9 +434,29 @@ export default App;
 `client/src/pages/AuthPage.js`
 
 ```jsx
-import React from 'react'
+import React, { useState } from 'react'
+import { useHttp } from '../hooks/http.hook'
 
 export const AuthPage = () => {
+  const { loading, request } = useHttp()
+
+  const [form, setForm] = useState({
+    email: '', password: ''
+  })
+
+  const changeHandler = event => {
+    setForm({ ...form, [event.target.name]: event.target.value})
+  }
+
+  const registerHandler = async () => {
+    try {
+      // changeHandler()
+      const data = await request('/api/auth/register', 'POST', {...form})
+      console.log('data:', data);
+    }
+    catch(e) {}
+  }
+
   return (
     <div className="row">
       <div className="col s6 offset-s3">
@@ -448,6 +472,7 @@ export const AuthPage = () => {
                   type="text"
                   className="yellow-input"
                   name="email"
+                  onChange={changeHandler}
                   autoFocus
                 />
                 <label htmlFor="email">email</label>
@@ -459,14 +484,27 @@ export const AuthPage = () => {
                   type="password"
                   className="yellow-input"
                   name="password"  
+                  onChange={changeHandler}
                 />
                 <label htmlFor="password">pasword</label>
               </div>
             </div>
           </div>
           <div className="card-action">
-            <button className="btn yellow darken-4" style={{marginRight: 10}}>Login</button>
-            <button className="btn grey lighten-1 black-text">Register</button>
+            <button
+              className="btn yellow darken-4"
+              style={{marginRight: 10}}
+              disabled={loading}
+            >
+              Login
+            </button>
+            <button
+              className="btn grey lighten-1 black-text"
+              onClick={registerHandler}
+              disabled={loading}
+            >
+              Register
+            </button>
           </div>
         </div>
       </div>
@@ -608,3 +646,69 @@ if(body){
 ```
 
 time 1:36:14
+
+## Work on data on frontend
+
+in `client/src/pages/AuthPage.js`:
+
+```js
+//
+```
+
+### Use M.toast
+
+Create new hook:
+
+```sh
+touch client/src/hooks/message.hook.js
+```
+
+```js
+import { text } from 'express'
+import { useCallback } from 'react'
+
+export const useMessage = () => {
+  return useCallback(text => {
+    if (window.M && text){
+      window.M.toast({ html: text})
+    }
+  }, [])
+}
+```
+
+import it in `client/src/pages/AuthPage.js`
+
+```js
+import { useMessage } from '../hooks/message.hook'
+// ...
+useEffect(() => {
+  console.warn('Error', error)
+  message(error)
+  clearError()
+}, [error, message, clearError])
+```
+
+### Debug
+
+look at error value, we get **null**, so, go to `client/src/hooks/http.hook.js`. 
+
+```js
+catch(e){
+      console.warn('Catch:', e.message)
+      setLoading(false)
+      setError(e.message)
+      throw e
+    }
+```
+
+here we see message.
+
+but in  `client/src/pages/AuthPage.js` *clearError* method clears error
+
+```js
+// const clearError = () => setError(null)
+const clearError = useCallback(() => {setError(null)}, [])
+```
+
+here Vladilen also returns setError(null), but in my case this generates error.
+

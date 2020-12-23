@@ -25,13 +25,14 @@ export const useHttp = () => {
       return data
     }
     catch(e){
+      console.warn('Catch:', e.message)
       setLoading(false)
       setError(e.message)
       throw e
     }
   }, [])
 
-  const clearError = () => setError(null)
+  const clearError = useCallback(() => {setError(null)}, []) 
 
   return { loading, request, error, clearError}
 }
