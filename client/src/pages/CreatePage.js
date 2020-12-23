@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
 
 export const CreatePage = () => {
   const history = useHistory()
   const auth = useContext(AuthContext)
-  const {request} = useHttp()
+  const { request } = useHttp()
   const [link, setLink] = useState('')
   const pressHandler = async event => {
     if(event.key === 'Enter') {
