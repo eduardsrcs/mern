@@ -62,25 +62,43 @@ router.post(
       }
       const { email, password } = req.body
 
-      const user = User.findOne({email})
+      User.findOne({email}, async (err, data) => {
+        if(data){
+          const isMatch = await bcrypt.compare(password, data.password)
+          if(!isMatch) {
+            return res.status(400).json({message: 'Invalid password.'})
+          }
+          const token = jwt.sign(
+            {userId: data.id},
+            config.get('jwtSecret'),
+            { expiresIn: '1h'}
+          )
+          
+          res.json({token, userId: data.id})
+        }
+        else {
+          return res.status(400).json({message: 'This email is not found.'})
+        }
+      })
 
-      if (!user) {
-        return res.status(400).json({message: 'This email is not found.'})
-      }
+      // const user = User.findOne({email})
+      // if (!user) {
+      //   return res.status(400).json({message: 'This email is not found.'})
+      // }
 
-      const isMatch = bcrypt.compare(password, user.password)
+      // const isMatch = bcrypt.compare(password, user.password)
 
-      if(!isMatch) {
-        return res.status(400).json({message: 'Invalid password.'})
-      }
+      // if(!isMatch) {
+      //   return res.status(400).json({message: 'Invalid password.'})
+      // }
 
-      const token = jwt.sign(
-        {userId: user.id},
-        config.get('jwtSecret'),
-        { expiresIn: '1h'}
-      )
+      // const token = jwt.sign(
+      //   {userId: user.id},
+      //   config.get('jwtSecret'),
+      //   { expiresIn: '1h'}
+      // )
 
-      res.json({token, userId: user.id})
+      // res.json({token, userId: user.id})
 
     }
     catch(e){
