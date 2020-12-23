@@ -578,3 +578,33 @@ At this moment we will get an error 404, because we trying to post on port 3000 
 [time 1:30:40](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=5440s) 
 
 ## Use proxy
+
+we will proxy requests from client to server. In `client/package.json` add:
+
+```json
+"proxy": "http://localhost:5000",
+```
+
+ this if for development only, later this will be changed...
+
+Now we will get response 400. In response body we see that both validators are triggered, meanwhile, password should be validated. 
+
+This is because server does not receive body... 
+
+## Include midleware
+
+in `app.js`
+
+```js
+app.use(express.json({ extended: true }))
+```
+
+get empty object in `routes/auth.routes.js`. That's because we sent text/plain and request payload is [object object], but should be email and password. To solve this, update hook useHttp in `client/src/hooks/http.hook.js`
+
+```js
+if(body){
+  body = JSON.stringify(body)
+}
+```
+
+time 1:36:14

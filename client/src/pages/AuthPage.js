@@ -9,11 +9,12 @@ export const AuthPage = () => {
   })
 
   const changeHandler = event => {
-    setForm({ ...form, [event.targret.name]: event.target.value})
+    setForm({ ...form, [event.target.name]: event.target.value})
   }
 
   const registerHandler = async () => {
     try {
+      // changeHandler()
       const data = await request('/api/auth/register', 'POST', {...form})
       console.log('data:', data);
     }
@@ -35,7 +36,7 @@ export const AuthPage = () => {
                   type="text"
                   className="yellow-input"
                   name="email"
-                  onChange="changeHandler"
+                  onChange={changeHandler}
                   autoFocus
                 />
                 <label htmlFor="email">email</label>
@@ -47,7 +48,7 @@ export const AuthPage = () => {
                   type="password"
                   className="yellow-input"
                   name="password"  
-                  onChange="changeHandler"
+                  onChange={changeHandler}
                 />
                 <label htmlFor="password">pasword</label>
               </div>
