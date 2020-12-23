@@ -980,6 +980,8 @@ useEffect(() => {
 
 [time 2:06:30](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=7590s)
 
+## Create link model
+
 ```sh
 touch routes/link.routes.js
 ```
@@ -1108,5 +1110,138 @@ router.get('/', auth, async (req, res)=> {
 // ...
 ```
 
+## Add baseUrl to config
 
+`config/default.json`
+
+```json
+"baseUrl": "http://localhost:5000"
+```
+
+include config in `routes/link.routes.js`
+
+```js
+const config = require('config')
+// ...
+const baseUrl = config.get('baseUrl')
+const { from } = req.body
+```
+
+## [npm shortid](https://www.npmjs.com/package/shortid/v/2.2.15)
+
+```
+npm i shortid@2.2.15
+```
+
+in `routes/link.routes.js`
+
+```js
+const {Router} = require('express')
+const config = require('config')
+const shortid = require('shortid')
+const Link = require('../models/Link')
+const auth = require('../middleware/auth.middleware')
+
+const router = Router()
+
+router.post('/generate', auth, async (req, res) => {
+  try{
+    const baseUrl = config.get('baseUrl')
+    const { from } = req.body
+    const code = shortid.generate()
+
+    Link.findOne({from}, (err, data) => {
+      if (data) {
+        return res.json({ link: data})
+      }
+    })
+
+    const to = baseUrl + '/t/' + code
+    const link = new Link({code, to, from, owner: req.user.userId})
+    await link.save()
+    res.status(201).json({link})
+  }
+  catch(e){
+    res.status(500).json({message: 'Something gone wrong, try again...'})
+  }
+})
+
+router.get('/', auth, async (req, res)=> {
+  try{
+    Link.findOne({ owner: req.user.userId}, (err, data) => {
+      if(data) {
+        res.json(data)
+      } else {
+
+      }
+    })
+  }
+  catch(e){
+    res.status(500).json({message: 'Something gone wrong, try again...'})
+  }
+})
+
+router.get('/:id', auth, async (req, res)=> {
+  try{
+    Link.findById(req.params.id, async (err, data) => {
+      if(data) {
+
+      } else {
+        
+      }
+    }) // ???
+  }
+  catch(e){
+    res.status(500).json({message: 'Something gone wrong, try again...'})
+  }
+})
+
+module.exports = router 
+
+```
+
+# Frontend. Again
+
+[time 2:25:10](https://www.youtube.com/watch?v=ivDjWYcKDZI&t=8710s)
+
+change `client/src/pages/CreatePage.js`
+
+```jsx
+import React, { useState, useEffect } from 'react'
+import { useHttp } from '../hooks/http.hook'
+
+export const CreatePage = () => {
+  const {request} = useHttp()
+  const [link, setLink] = useState('')
+  const pressHandler = async event => {
+    if(event.key === 'Enter') {
+      try {
+        const data = await request('/api/link/generate', 'POST', {from: link})
+        console.log('Link data:', data)
+      }
+      catch(e){}
+    }
+  }
+
+  useEffect(() => {
+    window.M.updateTextFields()
+  })
+
+  return (
+    <div className="row">
+      <div className="col s8 offset-s2" style={{paddingTop: '2rem'}}>
+        <input
+          placeholder="Insert link"
+          id="link"
+          type="text"
+          value={link}
+          onChange={e => setLink(e.target.value)}
+          onKeyPress={pressHandler}
+        />
+        <label htmlFor="link">Insert link</label>
+      </div>
+    </div>
+  )
+}
+```
 

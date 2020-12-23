@@ -57,6 +57,7 @@ export const AuthPage = () => {
                   type="text"
                   className="yellow-input"
                   name="email"
+                  value={form.email}
                   onChange={changeHandler}
                   autoFocus
                 />
@@ -69,6 +70,7 @@ export const AuthPage = () => {
                   type="password"
                   className="yellow-input"
                   name="password"  
+                  value={form.password}
                   onChange={changeHandler}
                 />
                 <label htmlFor="password">pasword</label>
