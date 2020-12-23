@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { NavLink, useHistory } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext'
 
 export const Navbar = () => {
   const history = useHistory()
@@ -18,7 +19,7 @@ export const Navbar = () => {
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><NavLink to="/create">Create</NavLink></li>
           <li><NavLink to="/Links">Links</NavLink></li>
-          <li><a href="/create" onClick={looutHandler}>Logout</a></li>
+          <li><a href="/create" onClick={logoutHandler}>Logout</a></li>
         </ul>
       </div>
     </nav>
