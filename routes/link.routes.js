@@ -11,9 +11,9 @@ router.post('/generate', auth, async (req, res) => {
     const baseUrl = config.get('baseUrl')
     const { from } = req.body
     const code = shortid.generate()
-
     Link.findOne({from}, (err, data) => {
       if (data) {
+        console.log(res.json({ link: data}))
         return res.json({ link: data})
       }
     })
@@ -24,6 +24,7 @@ router.post('/generate', auth, async (req, res) => {
     res.status(201).json({link})
   }
   catch(e){
+    console.log('Catch on generate')
     res.status(500).json({message: 'Something gone wrong, try again...'})
   }
 })
@@ -44,6 +45,7 @@ router.get('/', auth, async (req, res)=> {
 })
 
 router.get('/:id', auth, async (req, res)=> {
+  console.log('Get by id')
   try{
     Link.findById(req.params.id, async (err, data) => {
       if(data) {
